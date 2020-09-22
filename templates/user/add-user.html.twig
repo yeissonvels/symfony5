@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+{% block body %}
+    <div class="container mt-3">
+        {{ message | raw }}
+        <div>{{ form(form) }}</div>
+    </div>
+{% endblock %}
