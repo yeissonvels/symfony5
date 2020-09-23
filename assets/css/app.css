@@ -1,3 +1,19 @@
 body {
     background-color: lightgray;
 }
+.red-color {
+    color: red;
+}
+.page-footer {
+    background-color: #2196F3;
+    color: white;
+}
+
+.footer-copyright {
+    background-color: #1D77C2;
+    color: white;
+}
+
+.page-footer a, .footer-copyright a {
+    color: white;
+}

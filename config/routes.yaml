@@ -4,5 +4,5 @@
 
 #index:
 #  path: /
-#  controller: App\Controller\TestController::SayHello
+#  controller: App\Controller\HomeController::SayHello
 

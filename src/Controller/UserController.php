@@ -16,11 +16,11 @@ use Symfony\Component\Serializer\Serializer;
 class UserController extends AbstractController
 {
     /**
-     * @Route("/user", name="user")
+     * @Route("/profile", name="app_profile")
      */
     public function index()
     {
-        return $this->render('user/index.html.twig', [
+        return $this->render('user/profile.html.twig', [
             'controller_name' => 'UserController',
         ]);
     }
@@ -33,6 +33,7 @@ class UserController extends AbstractController
         $message = '';
         $user = $this->setProperties($request, $user);
         $form = $this->createForm(UserType::class, $user);
+
 
         if ($request->isMethod('POST')) {
             $form->submit($request->request->get($form->getName()));
@@ -49,7 +50,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/edit-user/{id}", name="edit-user")
+     * @Route("/profile/edit-user/{id}", name="edit-user")
      */
     function editUser(Request $request, $id) {
         $user = $this->getDoctrine()->getRepository(User::class)->findBy(array('id' => $id));
@@ -90,7 +91,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/users", name="json-users")
+     * @Route("/profile/users", name="json-users")
      */
     public function jsonUsers() {
         $users = $this->getUsers();
@@ -110,10 +111,11 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/list-users", name="list-users")
+     * @Route("/profile/list-users", name="list-users")
      */
     public function listUsers(): Response {
         $users = $this->getUsers();
+        $this->pre($users);
         return $this->render('user/users.html.twig', array('users' => $users));
     }
 }
