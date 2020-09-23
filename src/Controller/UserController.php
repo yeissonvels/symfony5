@@ -8,6 +8,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
 class UserController extends AbstractController
@@ -45,6 +48,21 @@ class UserController extends AbstractController
         return $this->render( 'user/add-user.html.twig', ['form' => $form->createView(), 'message' => $message]);
     }
 
+    /**
+     * @Route("/edit-user/{id}", name="edit-user")
+     */
+    function editUser(Request $request, $id) {
+        $user = $this->getDoctrine()->getRepository(User::class)->findBy(array('id' => $id));
+        $this->pre($user);
+        return new Response("Ok");
+    }
+
+    public function pre($obj) {
+        echo '<pre>';
+        print_r($obj);
+        echo '</pre>';
+    }
+
     private function saveUserInDB(User $userObject) {
         $manager = $this->getDoctrine()->getManager();
         $manager->persist($userObject);
@@ -67,21 +85,35 @@ class UserController extends AbstractController
         return $obj;
     }
 
+    public function getUsers() {
+        return $this->getDoctrine()->getRepository(User::class)->findAll();
+    }
+
     /**
-     * @Route("/get-users", name="user-list")
+     * @Route("/users", name="json-users")
      */
-    public function getUsers(): Response {
-        //$manager = $this->getDoctrine()->getManager();
-        $data = $this->getDoctrine()->getRepository(User::class)->findAll();
+    public function jsonUsers() {
+        $users = $this->getUsers();
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
-        $response->setContent($this->serializerToJson($data));
+        $response->setContent($this->serializerToJson($users));
 
         return $response;
     }
 
     public function serializerToJson($anObject) {
-        $serializer = new Serializer();
-        return $serializer->serialize($anObject);
+        $encoders = [new XmlEncoder(), new JsonEncoder()];
+        $normalizers = [new ObjectNormalizer()];
+        $serializer = new Serializer($normalizers, $encoders);
+
+        return $serializer->serialize($anObject, 'json');
+    }
+
+    /**
+     * @Route("/list-users", name="list-users")
+     */
+    public function listUsers(): Response {
+        $users = $this->getUsers();
+        return $this->render('user/users.html.twig', array('users' => $users));
     }
 }
