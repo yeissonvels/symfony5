@@ -15,6 +15,13 @@ use Symfony\Component\Security\Http\Authenticator\AuthenticatorInterface;
  */
 class User implements UserInterface
 {
+    const ROLES = array(
+        'super admin' => 'ROLE_SUPER_ADMIN',
+        'admin' => 'ROLE_ADMIN',
+        'editor' => 'ROLE_EDITOR',
+        'user' => 'ROLE_USER'
+    );
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -45,7 +52,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="json")
      */
-    private $roles = ['ROLE_USER'];
+    private $roles = [];
 
     public function getId(): ?int
     {
@@ -114,14 +121,16 @@ class User implements UserInterface
      *
      * @return string[] The user roles
      */
-    public function getRoles()
+    public function getRoles(): array
     {
-
-        return $this->roles[0];
+        $roles = $this->roles;
+        //$roles[] = 'ROLE_USER';
+        return array_unique($roles);
     }
 
-    public function setRoles(array $roles) {
+    public function setRoles($roles) {
         $this->roles = $roles;
+
     }
 
     /**
@@ -155,5 +164,10 @@ class User implements UserInterface
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
+    }
+
+    function __toString()
+    {
+        return (string) $this->getRoles();
     }
 }

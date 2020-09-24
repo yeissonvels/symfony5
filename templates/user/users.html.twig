@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    {% include "common/header.html.twig" %}
     <div class="container mt-3">
         <table class="table">
             <thead>
@@ -17,10 +18,11 @@
                         <td>{{ user.firstname }}</td>
                         <td>{{ user.lastname }}</td>
                         <td>{{ user.email }}</td>
-                        <td><a href="/edit-user/{{ user.id }}">Editar</a></td>
+                        <td><a href="{{ path('_edit_user', {'id': user.id }) }}">Editar</a></td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+    {% include "common/footer.html.twig" %}
 {% endblock %}

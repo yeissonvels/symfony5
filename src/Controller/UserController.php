@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -16,7 +17,7 @@ use Symfony\Component\Serializer\Serializer;
 class UserController extends AbstractController
 {
     /**
-     * @Route("/profile", name="app_profile")
+     * @Route("/profile", name="_app_profile")
      */
     public function index()
     {
@@ -26,20 +27,19 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/add-user", name="add-user")
+     * @Route("/admin/add-user", name="_add_user")
      */
-    public function addUser(Request $request) {
+    public function addUser(Request $request, UserPasswordEncoderInterface $encoder) {
         $user = new User();
         $message = '';
         $user = $this->setProperties($request, $user);
-        $form = $this->createForm(UserType::class, $user);
-
+        $form = $this->createForm(UserType::class);
 
         if ($request->isMethod('POST')) {
             $form->submit($request->request->get($form->getName()));
             if ($form->isSubmitted() && $form->isValid()) {
                 $password = $user->getPassword();
-                $user->setPassword(md5($password));
+                $user->setPassword($encoder->encodePassword($user, $password));
                 $userId = $this->saveUserInDB($user);
                 $form = $this->createForm(UserType::class, new User());
                 $message = '<div class="alert alert-success">Usuario creado! Id: ' . $userId . '</div>';
@@ -50,12 +50,30 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/profile/edit-user/{id}", name="edit-user")
+     * @Route("/admin/edit-user/{id}", name="_edit_user")
      */
-    function editUser(Request $request, $id) {
+    function editUser(Request $request, $id, UserPasswordEncoderInterface $encoder) {
+        $message = '';
         $user = $this->getDoctrine()->getRepository(User::class)->findBy(array('id' => $id));
-        $this->pre($user);
-        return new Response("Ok");
+        $oldPassword = $user[0]->getPassword();
+        $form = $this->createForm(UserType::class, $user[0]);
+
+        if ($request->isMethod('POST')) {
+            $form->submit($request->request->get($form->getName()));
+            if ($form->isSubmitted() && $form->isValid()) {
+                $user = $this->setProperties($request, $user[0]);
+                if ($password = $user->getPassword() == "") {
+                    $user->setPassword($oldPassword);
+                } else {
+                    $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
+                }
+                $this->saveUserInDB($user);
+                $form = $this->createForm(UserType::class, new User());
+                $message = '<div class="alert alert-success">Usuario actualizado!</div>';
+            }
+        }
+
+        return $this->render( 'user/add-user.html.twig', ['form' => $form->createView(), 'message' => $message]);
     }
 
     public function pre($obj) {
@@ -91,7 +109,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/profile/users", name="json-users")
+     * @Route("/admin/users", name="_json-users")
      */
     public function jsonUsers() {
         $users = $this->getUsers();
@@ -111,11 +129,10 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/profile/list-users", name="list-users")
+     * @Route("/admin/list-users", name="_list-users")
      */
     public function listUsers(): Response {
         $users = $this->getUsers();
-        $this->pre($users);
         return $this->render('user/users.html.twig', array('users' => $users));
     }
 }

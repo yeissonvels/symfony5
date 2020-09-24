@@ -1,10 +1,12 @@
 {% extends 'base.html.twig' %}
-
+{% block title %}Create user{% endblock %}
 {% block body %}
     {% include "common/header.html.twig" %}
     <div class="container mt-3">
         {{ message | raw }}
-        <div>{{ form(form) }}</div>
+        <div>
+            {{ form(form) }}
+        </div>
     </div>
     {% include "common/footer.html.twig" %}
 {% endblock %}
