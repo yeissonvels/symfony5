@@ -1,15 +1,17 @@
 {% extends 'base.html.twig' %}
-
+{% block title %}Users list{% endblock %}
 {% block body %}
     {% include "common/header.html.twig" %}
     <div class="container mt-3">
+        <a href="{{ path('_add_user') }}">New</a>
         <table class="table">
             <thead>
                 <tr>
-                    <th>Nombre</th>
-                    <th>Apellidos</th>
-                    <th>Correo</th>
-                    <th>Editar</th>
+                    <th>Firstname</th>
+                    <th>Lastname</th>
+                    <th>E-mail</th>
+                    <th>Role</th>
+                    <th>Edit</th>
                 </tr>
             </thead>
             <tbody>
@@ -18,6 +20,11 @@
                         <td>{{ user.firstname }}</td>
                         <td>{{ user.lastname }}</td>
                         <td>{{ user.email }}</td>
+                        <td>
+                            {% for role in user.roles %}
+                            {{ role }}
+                            {% endfor %}
+                        </td>
                         <td><a href="{{ path('_edit_user', {'id': user.id }) }}">Editar</a></td>
                     </tr>
                 {% endfor %}

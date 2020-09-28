@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class HomeController extends AbstractController {
     /**
-     * @Route("/", name="/");
+     * @Route("/", name="_home");
      */
     public function SayHello() : Response {
         return $this->render('home/home.html.twig');

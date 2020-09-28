@@ -4,14 +4,8 @@
 {% block body %}
     {% include "common/header.html.twig" %}
     <div class="container mt-3">
-       Profile
-        {% if is_granted('ROLE_ADMIN') %}
-            Administrator
-        {% elseif is_granted('ROLE_USER') %}
-            User
-        {% else %}
-            Anonymous
-        {% endif %}
+        {{ message | raw }}
+        {{ form(form) }}
     </div>
     {% include "common/footer.html.twig" %}
 {% endblock %}

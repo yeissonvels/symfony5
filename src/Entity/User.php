@@ -54,6 +54,12 @@ class User implements UserInterface
      */
     private $roles = [];
 
+    /**
+     * @ORM\Column(type="string", options={"default"=""}, nullable=true)
+     *
+     */
+    private $photo;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -169,5 +175,13 @@ class User implements UserInterface
     function __toString()
     {
         return (string) $this->getRoles();
+    }
+
+    function setPhoto($photo) {
+        $this->photo = $photo;
+    }
+
+    function getPhoto() {
+        return $this->photo;
     }
 }

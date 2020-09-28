@@ -13,31 +13,55 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class UserController extends AbstractController
 {
     /**
      * @Route("/profile", name="_app_profile")
      */
-    public function index()
+    public function index(Request $request, UserPasswordEncoderInterface $encoder)
     {
+        $message = '';
+        $oldPassword = $this->getUser()->getPassword();
+        $form = $this->createForm(UserType::class, $this->getUser());
+        if ($request->isMethod('POST')) {
+            $form->submit($request->request->get($form->getName()));
+            if ($form->isSubmitted() && $form->isValid()) {
+                $user = $form->getData();
+                if ($password = $user->getPassword() == "") {
+                    $user->setPassword($oldPassword);
+                } else {
+                    $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
+                }
+                $this->saveUserInDB($user);
+                $message = '<div class="alert alert-success">Usuario actualizado!</div>';
+            }
+        }
+
         return $this->render('user/profile.html.twig', [
-            'controller_name' => 'UserController',
+            'form' => $form->createView(),
+            'message' => $message
         ]);
+    }
+
+    function uploadFile(Request $request) {
+        $image = $request->files->get('photo');
+        //echo $image->getParameters();
+        $this->pre($image);
     }
 
     /**
      * @Route("/admin/add-user", name="_add_user")
      */
     public function addUser(Request $request, UserPasswordEncoderInterface $encoder) {
-        $user = new User();
         $message = '';
-        $user = $this->setProperties($request, $user);
-        $form = $this->createForm(UserType::class);
+        $form = $this->createForm(UserType::class, new User());
 
         if ($request->isMethod('POST')) {
             $form->submit($request->request->get($form->getName()));
             if ($form->isSubmitted() && $form->isValid()) {
+                $user = $form->getData();
                 $password = $user->getPassword();
                 $user->setPassword($encoder->encodePassword($user, $password));
                 $userId = $this->saveUserInDB($user);
@@ -61,14 +85,13 @@ class UserController extends AbstractController
         if ($request->isMethod('POST')) {
             $form->submit($request->request->get($form->getName()));
             if ($form->isSubmitted() && $form->isValid()) {
-                $user = $this->setProperties($request, $user[0]);
+                $user = $form->getData();
                 if ($password = $user->getPassword() == "") {
                     $user->setPassword($oldPassword);
                 } else {
                     $user->setPassword($encoder->encodePassword($user, $user->getPassword()));
                 }
                 $this->saveUserInDB($user);
-                $form = $this->createForm(UserType::class, new User());
                 $message = '<div class="alert alert-success">Usuario actualizado!</div>';
             }
         }
@@ -87,21 +110,6 @@ class UserController extends AbstractController
         $manager->persist($userObject);
         $manager->flush();
         return $userObject->getId();
-    }
-
-    private function setProperties(Request $request, User $obj) {
-        if (!empty($request->request->get('user'))) {
-            foreach ($request->request->get('user') as $key => $value) {
-                if (property_exists($obj, $key)) {
-                    $key = str_replace('_', '', $key);
-                    $userArray = array($obj, "set" . ucfirst($key));
-                    $arrValue = array($value);
-                    call_user_func_array($userArray, $arrValue);
-                }
-            }
-        }
-
-        return $obj;
     }
 
     public function getUsers() {

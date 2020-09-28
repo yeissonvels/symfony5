@@ -8,14 +8,14 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class  UserType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        // Data Model $builder->getData()
-        // print_r($builder->getData());
         $builder
         ->add('firstname', TextType::class)
         ->add('lastname', TextType::class)
@@ -34,6 +34,31 @@ class  UserType extends AbstractType {
                 'empty_data' => 'ROLE_USER',
             ]
         )
+        /*->add('photo', FileType::class, [
+            'label' => 'Photo',
+
+            // unmapped means that this field is not associated to any entity property
+            'mapped' => false,
+
+            // make it optional so you don't have to re-upload the PDF file
+            // every time you edit the Product details
+            'required' => false,
+
+            // unmapped fields can't define their validation using annotations
+            // in the associated entity, so you can use the PHP constraint classes
+            'constraints' => [
+                new File([
+                    'maxSize' => '1024k',
+                    'mimeTypes' => [
+                        'image/jpg',
+                        'image/png',
+                        'image/jpeg',
+                    ],
+                    'mimeTypesMessage' => 'Please upload a valid image',
+                ])
+            ],
+        ])*/
+
         ->add('save', SubmitType::class, ['label' => $this->editing($builder) ? 'Change user' : 'Add user']);
     }
 
