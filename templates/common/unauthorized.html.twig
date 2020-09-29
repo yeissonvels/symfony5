@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+{% block title %}Danger{% endblock %}
+{% block body %}
+    {% include 'common/header.html.twig' %}
+    <div class="container mt-3">
+        <div class="alert alert-danger">{{ message }}</div>
+    </div>
+    {% include 'common/footer.html.twig' %}
+{% endblock %}

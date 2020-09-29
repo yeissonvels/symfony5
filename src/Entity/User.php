@@ -184,4 +184,14 @@ class User implements UserInterface
     function getPhoto() {
         return $this->photo;
     }
+
+    public static function hasRole($roles, $roleToFind) {
+        foreach ($roles as $role) {
+            if ($role == $roleToFind) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

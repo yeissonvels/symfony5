@@ -1,10 +1,10 @@
 <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Users
+        {% trans %}Users{% endtrans %}
     </a>
     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-        <a class="dropdown-item" href="/admin/list-users">List users</a>
-        <a class="dropdown-item" href="#">Another action</a>
+        <a class="dropdown-item" href="{{ path('_list_users') }}">{% trans %}User list{% endtrans %}</a>
+        <a class="dropdown-item" href="{{ path('_add_user') }}">{% trans %}Add user{% endtrans %}</a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="#">Something else here</a>
     </div>

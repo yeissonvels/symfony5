@@ -4,7 +4,10 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\Type\UserType;
+use App\Service\IconGenerator;
+use App\Service\MessageGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,7 +21,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class UserController extends AbstractController
 {
     /**
-     * @Route("/profile", name="_app_profile")
+     * @Route("/{_locale}/profile", name="_app_profile")
      */
     public function index(Request $request, UserPasswordEncoderInterface $encoder)
     {
@@ -52,7 +55,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/admin/add-user", name="_add_user")
+     * @Route("/{_locale}/admin/add-user", name="_add_user")
      */
     public function addUser(Request $request, UserPasswordEncoderInterface $encoder) {
         $message = '';
@@ -74,12 +77,19 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/admin/edit-user/{id}", name="_edit_user")
+     * @Route("/{_locale}/admin/edit-user/{id}", name="_edit_user")
      */
     function editUser(Request $request, $id, UserPasswordEncoderInterface $encoder) {
         $message = '';
         $user = $this->getDoctrine()->getRepository(User::class)->findBy(array('id' => $id));
-        $oldPassword = $user[0]->getPassword();
+        $userObject = $user[0];
+        if (User::hasRole($userObject->getRoles(), 'ROLE_SUPER_ADMIN')) {
+            if (!User::hasRole($this->getUser()->getRoles(), 'ROLE_SUPER_ADMIN')) {
+                $message = "You don't have privileges to perfom this operation.";
+               return $this->render('common/unauthorized.html.twig', array('message' => $message ));
+            }
+        }
+        $oldPassword = $userObject->getPassword();
         $form = $this->createForm(UserType::class, $user[0]);
 
         if ($request->isMethod('POST')) {
@@ -117,7 +127,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/admin/users", name="_json-users")
+     * @Route("/admin/users", name="_json_users")
      */
     public function jsonUsers() {
         $users = $this->getUsers();
@@ -137,10 +147,59 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/admin/list-users", name="_list-users")
+     * @Route("/{_locale}/admin/list-users", name="_list_users")
      */
-    public function listUsers(): Response {
+    public function listUsers(IconGenerator $iconGenerator): Response {
+        $editIcon = $iconGenerator->editIcon();
         $users = $this->getUsers();
-        return $this->render('user/users.html.twig', array('users' => $users));
+        return $this->render('user/users.html.twig', array(
+                'users' => $users,
+                'edit' => $editIcon
+            )
+        );
+    }
+
+    /**
+     * @Route("/config/create-admin", name="_create_admin")
+     */
+    public function createAdminUser(UserPasswordEncoderInterface $encoder) {
+        $users = $this->getDoctrine()->getRepository(User::class)->findAll();
+        $response = '<span style="color: red;"><b>El usuario admin ya existe.</b></span>';
+        if (count($users) == 0) {
+            $response = '<span style="color: red;"><b>Usuario admin creado correctamente.</b></span>';
+            $user = new User();
+            $manager = $this->getDoctrine()->getManager();
+            $password = $encoder->encodePassword($user, 'z0002cf576edb');
+            $user->setFirstname('Admin');
+            $user->setLastname('Admin');
+            $user->setEmail('admin@admin.com');
+            $user->setPassword($password);
+            $user->setRoles(['ROLE_SUPER_ADMIN']);
+            $user->setPhoto('');
+            $manager->persist($user);
+            $manager->flush();
+        }
+
+        return new Response($response);
+    }
+
+    /**
+     * @Route("/test-message", name="_test_message")
+     */
+    function testService(MessageGenerator $generator) {
+        return new Response($generator->getHappyMessage());
+    }
+
+    /**
+     * @Route("/set-locale/{locale}", name="_set_locale")
+     */
+    function setLocale(Request $request, $locale = "") {
+        $locale = "/" . $locale . "/";
+        $referer = $request->headers->get('referer');
+        $explode = explode("/", $referer);
+        $explodedLocale = isset($explode[3]) ? $explode[3] : "";
+        $currentLocale = "/" . $explodedLocale . "/";
+        $referer = str_ireplace($currentLocale, $locale, $referer);
+        return new RedirectResponse($referer);
     }
 }

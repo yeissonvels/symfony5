@@ -12,16 +12,33 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class  UserType extends AbstractType {
+    protected $translator;
+    function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+
         $builder
-        ->add('firstname', TextType::class)
-        ->add('lastname', TextType::class)
-        ->add('email', TextType::class)
+        ->add('firstname', TextType::class, array(
+                'label' => $this->translator->trans('firstname')
+            )
+        )
+        ->add('lastname', TextType::class, array(
+                'label' => $this->translator->trans('lastname')
+            )
+        )
+        ->add('email', TextType::class, array(
+                'label' => $this->translator->trans('email')
+            )
+        )
         ->add('password', PasswordType::class, array(
-                'label' => 'Password',
+                'label' => $this->translator->trans('password'),
                 'required' => empty($builder->getData()->getId()),
                 'empty_data' => ''
             )

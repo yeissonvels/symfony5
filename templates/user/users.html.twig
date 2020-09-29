@@ -25,7 +25,15 @@
                             {{ role }}
                             {% endfor %}
                         </td>
-                        <td><a href="{{ path('_edit_user', {'id': user.id }) }}">Editar</a></td>
+                        <td>
+                            {% if user.id == 1 %}
+                                {% if is_granted('ROLE_SUPER_ADMIN') %}
+                                    <a href="{{ path('_edit_user', {'id': user.id }) }}">{{ edit | raw }}</a>
+                                {% endif %}
+                            {% else %}
+                                <a href="{{ path('_edit_user', {'id': user.id }) }}">{{ edit | raw }}</a>
+                            {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
