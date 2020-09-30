@@ -197,9 +197,15 @@ class UserController extends AbstractController
         $locale = "/" . $locale . "/";
         $referer = $request->headers->get('referer');
         $explode = explode("/", $referer);
+
+        if (count($explode) == 4) {
+            return new RedirectResponse($locale);
+        }
+
         $explodedLocale = isset($explode[3]) ? $explode[3] : "";
         $currentLocale = "/" . $explodedLocale . "/";
         $referer = str_ireplace($currentLocale, $locale, $referer);
+
         return new RedirectResponse($referer);
     }
 }

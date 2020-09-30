@@ -8,8 +8,16 @@
 
 namespace App\Service;
 
+use Symfony\Component\Asset\Package;
+use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
+use Symfony\Component\Asset\Context\RequestStackContext;
+use Symfony\Component\Asset\PathPackage;
+
 
 class FlagService
 {
+    function flag($name, $size = 16) {
+
+    }
 
 }
