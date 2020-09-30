@@ -17,3 +17,7 @@ body {
 .page-footer a, .footer-copyright a {
     color: white;
 }
+
+ul.flags li {
+    list-style: none;
+}

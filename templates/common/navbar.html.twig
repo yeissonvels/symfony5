@@ -24,23 +24,26 @@
             {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                 <li>
                     <p>
-                        Email: {{ app.user.email }}
-                        <a href="/logout" class="red-color">Logout {{ icon_service.logoutIcon() | raw }}</a>
+                        {% set email =  'email' %}
+                        {{ email|trans|capitalize }}: {{ app.user.email }}
+                        <a href="{{ path('app_logout') }}" class="red-color" title="{% trans %}Logout{% endtrans %}">
+                            {{ icon_service.logoutIcon() | raw }}
+                        </a>
                     </p>
                 </li>
             {% else %}
                 <li>
-                    <a href="{{ path('app_login') }}">Login {{ icon_service.loginIcon('pruebo') | raw }}</a>
+                    <a href="{{ path('app_login') }}">Login {{ icon_service.loginIcon() | raw }}</a>
                 </li>
             {% endif %}
 
         </ul>
         <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            <input class="form-control mr-sm-2" type="search" placeholder="{% trans %}Search{% endtrans %}" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">{% trans %}Search{% endtrans %}</button>
         </form>
 
-        <ul>
+        <ul class="flags">
             <li>
                 <a href="{{ path('_set_locale', {'locale': 'en' } ) }}"><img src="{{ asset('build/flags/16/United Kingdom(Great Britain).png') }}" alt="England flag"></a></li>
             <li>

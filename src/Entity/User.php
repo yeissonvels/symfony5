@@ -172,10 +172,10 @@ class User implements UserInterface
         // TODO: Implement eraseCredentials() method.
     }
 
-    function __toString()
+    /*function __toString()
     {
         return (string) $this->getRoles();
-    }
+    }*/
 
     function setPhoto($photo) {
         $this->photo = $photo;
