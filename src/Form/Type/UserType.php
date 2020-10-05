@@ -51,7 +51,7 @@ class  UserType extends AbstractType {
                 'empty_data' => 'ROLE_USER',
             ]
         )
-        /*->add('photo', FileType::class, [
+        ->add('photo', FileType::class, [
             'label' => 'Photo',
 
             // unmapped means that this field is not associated to any entity property
@@ -74,7 +74,7 @@ class  UserType extends AbstractType {
                     'mimeTypesMessage' => 'Please upload a valid image',
                 ])
             ],
-        ])*/
+        ])
 
         ->add('save', SubmitType::class, ['label' => $this->editing($builder) ? 'Change user' : 'Add user']);
     }

@@ -15,7 +15,8 @@ class DashboardController extends AbstractDashboardController
      */
     public function index(): Response
     {
-        return parent::index();
+        //return parent::index();
+        return $this->render('admin/home.html.twig', array());
     }
 
     public function configureDashboard(): Dashboard
@@ -43,10 +44,6 @@ class DashboardController extends AbstractDashboardController
         // yield MenuItem::linkToCrud('The Label', 'icon class', EntityClass::class);
         return [
             MenuItem::linkToDashboard('Dashboard', 'fa fa-home'),
-            /*MenuItem::section('Blog'),
-            MenuItem::linkToCrud('Categories', 'fa fa-tags', Category::class),
-            MenuItem::linkToCrud('Blog Posts', 'fa fa-file-text', BlogPost::class),*/
-
             MenuItem::section('Users'),
             //MenuItem::linkToCrud('Comments', 'fa fa-comment', Comment::class),
             MenuItem::linkToCrud('Users', 'fa fa-user', UserCrudController::getEntityFqcn()),

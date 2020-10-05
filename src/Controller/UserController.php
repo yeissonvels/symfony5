@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\Type\UserType;
+use App\Helpers\Utils;
 use App\Service\IconGenerator;
 use App\Service\MessageGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,9 +18,17 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class UserController extends AbstractController
 {
+    protected $slugger;
+
+    function __construct(SluggerInterface $slugger)
+    {
+        $this->slugger = $slugger;
+    }
+
     /**
      * @Route("/{_locale}/profile", name="_app_profile")
      */
@@ -48,10 +57,25 @@ class UserController extends AbstractController
         ]);
     }
 
-    function uploadFile(Request $request) {
-        $image = $request->files->get('photo');
-        //echo $image->getParameters();
-        $this->pre($image);
+    function uploadFile(Request $request, $userId = 0) {
+        $files = $request->files->get('user');
+
+        foreach ($files as $file) {
+            $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $this->slugger->slug($originalFilename);
+            $newFilename = $safeFilename . '.' . $file->guessExtension();
+            $imgPath = $this->getParameter('image_directory') . '/' . $userId . '/';
+            // Move the file to the directory where brochures are stored
+            try {
+                $file->move(
+                //$this->getParameter('image_directory'),
+                    $imgPath,
+                    $newFilename
+                );
+            } catch (FileException $e) {
+                // ... handle exception if something happens during file upload
+            }
+        }
     }
 
     /**
@@ -80,6 +104,11 @@ class UserController extends AbstractController
      * @Route("/{_locale}/admin/edit-user/{id}", name="_edit_user")
      */
     function editUser(Request $request, $id, UserPasswordEncoderInterface $encoder) {
+        echo __FILE__ . '<br>';
+        echo __LINE__ . '<br>';
+
+        $this->uploadFile($request, $id);
+        exit;
         $message = '';
         $user = $this->getDoctrine()->getRepository(User::class)->findBy(array('id' => $id));
         $userObject = $user[0];
