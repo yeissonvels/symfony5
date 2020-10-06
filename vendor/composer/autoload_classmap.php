@@ -6,6 +6,8 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\Controller\\Admin\\DashboardController' => $baseDir . '/src/Controller/Admin/DashboardController.php',
+    'App\\Controller\\Admin\\UserCrudController' => $baseDir . '/src/Controller/Admin/UserCrudController.php',
     'App\\Controller\\ApiController' => $baseDir . '/src/Controller/ApiController.php',
     'App\\Controller\\HomeController' => $baseDir . '/src/Controller/HomeController.php',
     'App\\Controller\\SecurityController' => $baseDir . '/src/Controller/SecurityController.php',
@@ -13,11 +15,13 @@ return array(
     'App\\DataFixtures\\UserFixtures' => $baseDir . '/src/DataFixtures/UserFixtures.php',
     'App\\Entity\\User' => $baseDir . '/src/Entity/User.php',
     'App\\Form\\Type\\UserType' => $baseDir . '/src/Form/Type/UserType.php',
+    'App\\Helpers\\Utils' => $baseDir . '/src/Helpers/Utils.php',
     'App\\Kernel' => $baseDir . '/src/Kernel.php',
     'App\\Repository\\UserRepository' => $baseDir . '/src/Repository/UserRepository.php',
     'App\\Security\\LoginFormAuthenticator' => $baseDir . '/src/Security/LoginFormAuthenticator.php',
     'App\\Service\\FlagService' => $baseDir . '/src/Service/FlagService.php',
     'App\\Service\\IconGenerator' => $baseDir . '/src/Service/IconGenerator.php',
+    'App\\Service\\ImageResizeService' => $baseDir . '/src/Service/ImageResizeService.php',
     'App\\Service\\MessageGenerator' => $baseDir . '/src/Service/MessageGenerator.php',
     'Collator' => $vendorDir . '/symfony/intl/Resources/stubs/Collator.php',
     'Doctrine\\Bundle\\DoctrineBundle\\Command\\CreateDatabaseDoctrineCommand' => $vendorDir . '/doctrine/doctrine-bundle/Command/CreateDatabaseDoctrineCommand.php',

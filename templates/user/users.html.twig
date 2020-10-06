@@ -3,15 +3,15 @@
 {% block body %}
     {% include "common/header.html.twig" %}
     <div class="container mt-3">
-        <a href="{{ path('_add_user') }}">New</a>
+        <a href="{{ path('_add_user') }}">{% set new = "new" %}{{ new|trans|capitalize }}</a>
         <table class="table">
             <thead>
                 <tr>
-                    <th>Firstname</th>
-                    <th>Lastname</th>
-                    <th>E-mail</th>
-                    <th>Role</th>
-                    <th>Edit</th>
+                    <th>{% trans %}firstname{% endtrans %}</th>
+                    <th>{% trans %}lastname{% endtrans %}</th>
+                    <th>{% trans %}email{% endtrans %}</th>
+                    <th>{% set role = "role" %}{{ role|trans|capitalize }}</th>
+                    <th>{% set editlabel = "edit" %}{{ editlabel|trans|capitalize }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,10 +28,10 @@
                         <td>
                             {% if user.id == 1 %}
                                 {% if is_granted('ROLE_SUPER_ADMIN') %}
-                                    <a href="{{ path('_edit_user', {'id': user.id }) }}">{{ edit | raw }}</a>
+                                    <a href="{{ path('_edit_user', {'id': user.id }) }}">{{ icon_service.editIcon() | raw }}</a>
                                 {% endif %}
                             {% else %}
-                                <a href="{{ path('_edit_user', {'id': user.id }) }}">{{ edit | raw }}</a>
+                                <a href="{{ path('_edit_user', {'id': user.id }) }}">{{  icon_service.editIcon() | raw }}</a>
                             {% endif %}
                         </td>
                     </tr>

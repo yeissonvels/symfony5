@@ -573,6 +573,8 @@ class ComposerStaticInitb9876977388e1d2bcd912d6315a2f126
     );
 
     public static $classMap = array (
+        'App\\Controller\\Admin\\DashboardController' => __DIR__ . '/../..' . '/src/Controller/Admin/DashboardController.php',
+        'App\\Controller\\Admin\\UserCrudController' => __DIR__ . '/../..' . '/src/Controller/Admin/UserCrudController.php',
         'App\\Controller\\ApiController' => __DIR__ . '/../..' . '/src/Controller/ApiController.php',
         'App\\Controller\\HomeController' => __DIR__ . '/../..' . '/src/Controller/HomeController.php',
         'App\\Controller\\SecurityController' => __DIR__ . '/../..' . '/src/Controller/SecurityController.php',
@@ -580,11 +582,13 @@ class ComposerStaticInitb9876977388e1d2bcd912d6315a2f126
         'App\\DataFixtures\\UserFixtures' => __DIR__ . '/../..' . '/src/DataFixtures/UserFixtures.php',
         'App\\Entity\\User' => __DIR__ . '/../..' . '/src/Entity/User.php',
         'App\\Form\\Type\\UserType' => __DIR__ . '/../..' . '/src/Form/Type/UserType.php',
+        'App\\Helpers\\Utils' => __DIR__ . '/../..' . '/src/Helpers/Utils.php',
         'App\\Kernel' => __DIR__ . '/../..' . '/src/Kernel.php',
         'App\\Repository\\UserRepository' => __DIR__ . '/../..' . '/src/Repository/UserRepository.php',
         'App\\Security\\LoginFormAuthenticator' => __DIR__ . '/../..' . '/src/Security/LoginFormAuthenticator.php',
         'App\\Service\\FlagService' => __DIR__ . '/../..' . '/src/Service/FlagService.php',
         'App\\Service\\IconGenerator' => __DIR__ . '/../..' . '/src/Service/IconGenerator.php',
+        'App\\Service\\ImageResizeService' => __DIR__ . '/../..' . '/src/Service/ImageResizeService.php',
         'App\\Service\\MessageGenerator' => __DIR__ . '/../..' . '/src/Service/MessageGenerator.php',
         'Collator' => __DIR__ . '/..' . '/symfony/intl/Resources/stubs/Collator.php',
         'Doctrine\\Bundle\\DoctrineBundle\\Command\\CreateDatabaseDoctrineCommand' => __DIR__ . '/..' . '/doctrine/doctrine-bundle/Command/CreateDatabaseDoctrineCommand.php',

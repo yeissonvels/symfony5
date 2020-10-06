@@ -6,6 +6,18 @@
         {{ message | raw }}
         <div>
             {{ form(form) }}
+            <hr>
+            <p>Imagen</p>
+            {% if user.photo != "" %}
+                {% set photoprofile = image_directory ~ user.id ~ '/' ~ user.photo %}
+                <p>
+                    <img src="{{ photoprofile }}" class="img-responsive">
+                </p>
+            {% else %}
+                <p>
+                    <div class="alert alert-warning">No tienes imagen de perfil</div>
+                </p>
+            {% endif %}
         </div>
     </div>
     {% include "common/footer.html.twig" %}

@@ -21,3 +21,7 @@ body {
 ul.flags li {
     list-style: none;
 }
+
+.img-responsive {
+    max-width: 100%;
+}

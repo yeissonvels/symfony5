@@ -9,15 +9,6 @@
       "css": [
         "/build/app.css"
       ]
-    },
-    "admin": {
-      "js": [
-        "/build/runtime.js",
-        "/build/admin.js"
-      ],
-      "css": [
-        "/build/admin.css"
-      ]
     }
   }
 }
