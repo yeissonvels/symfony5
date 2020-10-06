@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\Type\UserType;
 use App\Helpers\Utils;
-use App\Service\IconGenerator;
 use App\Service\MessageGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -65,7 +64,7 @@ class UserController extends AbstractController
         if (!is_object($files['photo'])) {
             return $result;
         }
-        
+
         foreach ($files as $file) {
             if (in_array($file->guessExtension(), $alloweds)) {
                 $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
